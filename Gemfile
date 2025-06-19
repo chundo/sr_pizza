@@ -16,8 +16,8 @@ gem "puma", ">= 5.0"
 gem "rails_admin", "~> 3.0"
 gem "sidekiq"
 gem 'dotenv-rails', groups: %i[development test]
-# gem 'sidekiq-cron'
-# gem "redis"
+gem 'sidekiq-cron'
+gem "redis"
 # gem 'letter_opener', group: :development
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -52,6 +52,9 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Use RSpec for testing [https://rspec.info/]
+  gem 'rspec-rails', '~> 8.0.0'
 end
 gem "sassc-rails"
 gem "sassc-rails"
