@@ -6,6 +6,6 @@ class PizzaOrder < ApplicationRecord
     validates :pizza_type, inclusion: { in: PIZZA_TYPES }
     validates :size, inclusion: { in: SIZES }
 
-    enum :pizza_type, { margherita: 'margherita', pepperoni: 'pepperoni', vegetarian: 'vegetarian' }
+    enum :pizza_type, { margherita: "margherita", pepperoni: "pepperoni", vegetarian: "vegetarian" }
     enum :size, { small: "small", medium: "medium", large: "large" }
 end

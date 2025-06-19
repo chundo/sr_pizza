@@ -15,8 +15,8 @@ gem "puma", ">= 5.0"
 
 gem "rails_admin", "~> 3.0"
 gem "sidekiq"
-gem 'dotenv-rails', groups: %i[development test]
-gem 'sidekiq-cron'
+gem "dotenv-rails", groups: %i[development test]
+gem "sidekiq-cron"
 gem "redis"
 # gem 'letter_opener', group: :development
 
@@ -54,7 +54,7 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   # Use RSpec for testing [https://rspec.info/]
-  gem 'rspec-rails', '~> 8.0.0'
+  gem "rspec-rails", "~> 8.0.0"
 end
 gem "sassc-rails"
 gem "sassc-rails"

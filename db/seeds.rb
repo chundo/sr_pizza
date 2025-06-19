@@ -52,7 +52,7 @@ orders_data.each_with_index do |order_data, index|
     pizza_type: order_data[:pizza_type],
     size: order_data[:size]
   )
-  
+
   created_orders << order
   puts "   ✅ Pedido #{index + 1}: #{order.customer_name} - #{order.pizza_type.humanize} (#{order.size.humanize})"
 end

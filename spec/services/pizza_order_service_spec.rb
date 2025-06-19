@@ -31,7 +31,7 @@ RSpec.describe PizzaOrderService, type: :service do
         size: 'LARGE'
       }
       service = described_class.new(params_with_strings)
-      
+
       # Access the sanitized params through the service processing
       expect { service.process }.to change(PizzaOrder, :count).by(1)
       expect(service.order.pizza_type).to eq('margherita')
@@ -43,13 +43,13 @@ RSpec.describe PizzaOrderService, type: :service do
     context 'with valid parameters' do
       it 'creates a new pizza order' do
         service = described_class.new(valid_params)
-        
+
         expect { service.process }.to change(PizzaOrder, :count).by(1)
       end
 
       it 'returns true on success' do
         service = described_class.new(valid_params)
-        
+
         result = service.process
         expect(result).to be true
       end
@@ -57,14 +57,14 @@ RSpec.describe PizzaOrderService, type: :service do
       it 'sets the order instance variable' do
         service = described_class.new(valid_params)
         service.process
-        
+
         expect(service.order).to be_a(PizzaOrder)
         expect(service.order).to be_persisted
       end
 
       it 'enqueues ProcessOrderJob' do
         service = described_class.new(valid_params)
-        
+
         expect {
           service.process
         }.to have_enqueued_job(ProcessOrderJob).with(kind_of(Integer))
@@ -73,7 +73,7 @@ RSpec.describe PizzaOrderService, type: :service do
       it 'clears errors on success' do
         service = described_class.new(valid_params)
         service.process
-        
+
         expect(service.errors).to be_empty
       end
     end
@@ -81,13 +81,13 @@ RSpec.describe PizzaOrderService, type: :service do
     context 'with invalid parameters' do
       it 'does not create a pizza order' do
         service = described_class.new({ customer_name: '' })
-        
+
         expect { service.process }.not_to change(PizzaOrder, :count)
       end
 
       it 'returns false on failure' do
         service = described_class.new({ customer_name: '' })
-        
+
         result = service.process
         expect(result).to be false
       end
@@ -95,14 +95,14 @@ RSpec.describe PizzaOrderService, type: :service do
       it 'populates errors array' do
         service = described_class.new({ customer_name: '' })
         service.process
-        
+
         expect(service.errors).not_to be_empty
         expect(service.errors).to include("Customer name can't be blank")
       end
 
       it 'does not enqueue ProcessOrderJob' do
         service = described_class.new({ customer_name: '' })
-        
+
         expect {
           service.process
         }.not_to have_enqueued_job(ProcessOrderJob)
@@ -111,7 +111,7 @@ RSpec.describe PizzaOrderService, type: :service do
       it 'sets order to unsaved instance' do
         service = described_class.new({ customer_name: '' })
         service.process
-        
+
         expect(service.order).to be_a(PizzaOrder)
         expect(service.order).not_to be_persisted
       end
@@ -124,13 +124,13 @@ RSpec.describe PizzaOrderService, type: :service do
 
       it 'handles exceptions gracefully' do
         service = described_class.new(valid_params)
-        
+
         expect { service.process }.not_to raise_error
       end
 
       it 'returns false when exception occurs' do
         service = described_class.new(valid_params)
-        
+
         result = service.process
         expect(result).to be false
       end
@@ -138,16 +138,16 @@ RSpec.describe PizzaOrderService, type: :service do
       it 'populates errors with exception message' do
         service = described_class.new(valid_params)
         service.process
-        
+
         expect(service.errors).to include('Error interno del servidor: Database error')
       end
 
       it 'logs the error' do
         service = described_class.new(valid_params)
-        
+
         expect(Rails.logger).to receive(:error).with('Error en PizzaOrderService: Database error')
         expect(Rails.logger).to receive(:error).with(kind_of(String)) # backtrace
-        
+
         service.process
       end
     end
@@ -162,7 +162,7 @@ RSpec.describe PizzaOrderService, type: :service do
       }
       service = described_class.new(params)
       service.process
-      
+
       expect(service.order.pizza_type).to eq('margherita')
     end
 
@@ -174,7 +174,7 @@ RSpec.describe PizzaOrderService, type: :service do
       }
       service = described_class.new(params)
       service.process
-      
+
       expect(service.order.size).to eq('large')
     end
 
@@ -186,7 +186,7 @@ RSpec.describe PizzaOrderService, type: :service do
       }
       service = described_class.new(params)
       result = service.process
-      
+
       expect(result).to be false
       expect(service.errors).to include("Pizza type can't be blank")
     end
@@ -199,7 +199,7 @@ RSpec.describe PizzaOrderService, type: :service do
       }
       service = described_class.new(params)
       result = service.process
-      
+
       expect(result).to be false
       expect(service.errors).to include("Size can't be blank")
     end
@@ -212,7 +212,7 @@ RSpec.describe PizzaOrderService, type: :service do
       }
       service = described_class.new(params)
       service.process
-      
+
       expect(service.order.customer_name).to eq('John Doe Jr.')
     end
   end
@@ -225,7 +225,7 @@ RSpec.describe PizzaOrderService, type: :service do
         size: 'medium'
       }
       service = described_class.new(invalid_pizza_params)
-      
+
       # This should be handled by the service's exception handling
       # since enum validation raises ArgumentError
       expect { service.process }.not_to raise_error
@@ -236,7 +236,7 @@ RSpec.describe PizzaOrderService, type: :service do
       PizzaOrder::PIZZA_TYPES.each do |pizza_type|
         params = valid_params.merge(pizza_type: pizza_type)
         service = described_class.new(params)
-        
+
         result = service.process
         expect(result).to be(true), "Failed for pizza_type: #{pizza_type}. Errors: #{service.errors}"
         expect(service.order.pizza_type).to eq(pizza_type)
@@ -247,7 +247,7 @@ RSpec.describe PizzaOrderService, type: :service do
       PizzaOrder::SIZES.each do |size|
         params = valid_params.merge(size: size)
         service = described_class.new(params)
-        
+
         result = service.process
         expect(result).to be(true), "Failed for size: #{size}. Errors: #{service.errors}"
         expect(service.order.size).to eq(size)
@@ -259,7 +259,7 @@ RSpec.describe PizzaOrderService, type: :service do
     it 'handles empty hash parameters' do
       service = described_class.new({})
       result = service.process
-      
+
       expect(result).to be false
       expect(service.errors).to include("Customer name can't be blank")
     end
@@ -270,7 +270,7 @@ RSpec.describe PizzaOrderService, type: :service do
         secret_key: 'should_be_ignored'
       )
       service = described_class.new(params_with_extra)
-      
+
       result = service.process
       expect(result).to be(false), "Service should fail with unknown attributes"
       expect(service.errors).to include(match(/unknown attribute/))
@@ -283,7 +283,7 @@ RSpec.describe PizzaOrderService, type: :service do
         'size' => 'medium'
       }
       service = described_class.new(string_key_params)
-      
+
       result = service.process
       # The service sanitize_params method should handle string keys correctly
       # but it needs to access keys as strings, not symbols
@@ -295,11 +295,11 @@ RSpec.describe PizzaOrderService, type: :service do
   describe 'job enqueueing' do
     it 'enqueues job with correct order id' do
       service = described_class.new(valid_params)
-      
+
       expect {
         service.process
       }.to have_enqueued_job(ProcessOrderJob)
-      
+
       # Check the order was created and has an ID
       expect(service.order).to be_persisted
       expect(service.order.id).to be_present
@@ -307,7 +307,7 @@ RSpec.describe PizzaOrderService, type: :service do
 
     it 'uses perform_later for async processing' do
       service = described_class.new(valid_params)
-      
+
       expect(ProcessOrderJob).to receive(:perform_later).with(kind_of(Integer))
       service.process
     end

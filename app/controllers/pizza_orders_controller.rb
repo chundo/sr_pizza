@@ -17,9 +17,9 @@ class PizzaOrdersController < ApplicationController
   def create
     service = PizzaOrderService.new(pizza_order_params)
     if service.process
-      render json: { status: 'success' }, status: :created
+      render json: { status: "success" }, status: :created
     else
-      render json: { status: 'failed', errors: service.errors }, status: :unprocessable_entity
+      render json: { status: "failed", errors: service.errors }, status: :unprocessable_entity
     end
   end
 

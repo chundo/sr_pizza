@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  mount Sidekiq::Web => '/sidekiq' if Rails.env.development?
-  mount RailsAdmin::Engine => '/admin', as: 'rails_admin' if Rails.env.development?
+  mount Sidekiq::Web => "/sidekiq" if Rails.env.development?
+  mount RailsAdmin::Engine => "/admin", as: "rails_admin" if Rails.env.development?
   resources :pizza_orders
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

@@ -9,7 +9,7 @@ class PizzaOrderService
 
   def process
     @order = PizzaOrder.new(@params)
-    
+
     if @order.save
       ProcessOrderJob.perform_later(@order.id)
       true

@@ -35,10 +35,10 @@ RSpec.describe '/pizza_orders', type: :request do
     it 'returns all pizza orders' do
       order1 = PizzaOrder.create!(valid_attributes)
       order2 = PizzaOrder.create!(valid_attributes.merge(customer_name: 'Jane Doe'))
-      
+
       get pizza_orders_url
       expect(response).to be_successful
-      
+
       json_response = JSON.parse(response.body)
       expect(json_response.length).to eq(2)
       expect(json_response.map { |order| order['id'] }).to include(order1.id, order2.id)
@@ -47,7 +47,7 @@ RSpec.describe '/pizza_orders', type: :request do
     it 'returns empty array when no orders exist' do
       get pizza_orders_url
       expect(response).to be_successful
-      
+
       json_response = JSON.parse(response.body)
       expect(json_response).to eq([])
     end
@@ -63,7 +63,7 @@ RSpec.describe '/pizza_orders', type: :request do
     it 'returns the correct pizza order' do
       get pizza_order_url(pizza_order)
       expect(response).to be_successful
-      
+
       json_response = JSON.parse(response.body)
       expect(json_response['id']).to eq(pizza_order.id)
       expect(json_response['customer_name']).to eq(pizza_order.customer_name)
@@ -83,7 +83,7 @@ RSpec.describe '/pizza_orders', type: :request do
         expect {
           post pizza_orders_url, params: { pizza_order: valid_attributes }
         }.to change(PizzaOrder, :count).by(1)
-        
+
         expect(response).to have_http_status(:created)
         json_response = JSON.parse(response.body)
         expect(json_response['status']).to eq('success')
@@ -116,7 +116,7 @@ RSpec.describe '/pizza_orders', type: :request do
 
       it 'returns error messages' do
         post pizza_orders_url, params: { pizza_order: { customer_name: '' } }
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response['status']).to eq('failed')
         expect(json_response['errors']).to be_present
@@ -129,10 +129,10 @@ RSpec.describe '/pizza_orders', type: :request do
           pizza_type: 'invalid_pizza',
           size: 'medium'
         }
-        
+
         post pizza_orders_url, params: { pizza_order: invalid_params }
         expect(response).to have_http_status(:unprocessable_entity)
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response['status']).to eq('failed')
         expect(json_response['errors']).to be_present
@@ -153,7 +153,7 @@ RSpec.describe '/pizza_orders', type: :request do
       it 'updates the requested pizza order' do
         put pizza_order_url(pizza_order), params: { pizza_order: new_attributes }
         pizza_order.reload
-        
+
         expect(pizza_order.customer_name).to eq('Jane Smith')
         expect(pizza_order.pizza_type).to eq('pepperoni')
         expect(pizza_order.size).to eq('large')
@@ -167,7 +167,7 @@ RSpec.describe '/pizza_orders', type: :request do
 
       it 'returns the updated pizza order' do
         put pizza_order_url(pizza_order), params: { pizza_order: new_attributes }
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response['customer_name']).to eq('Jane Smith')
         expect(json_response['pizza_type']).to eq('pepperoni')
@@ -183,7 +183,7 @@ RSpec.describe '/pizza_orders', type: :request do
 
       it 'returns error messages' do
         put pizza_order_url(pizza_order), params: { pizza_order: { customer_name: '' } }
-        
+
         json_response = JSON.parse(response.body)
         expect(json_response).to have_key('customer_name')
         expect(json_response['customer_name']).to include("can't be blank")
@@ -193,7 +193,7 @@ RSpec.describe '/pizza_orders', type: :request do
         original_name = pizza_order.customer_name
         put pizza_order_url(pizza_order), params: { pizza_order: { customer_name: '' } }
         pizza_order.reload
-        
+
         expect(pizza_order.customer_name).to eq(original_name)
       end
 
@@ -213,7 +213,7 @@ RSpec.describe '/pizza_orders', type: :request do
   describe 'DELETE /pizza_orders/:id' do
     it 'destroys the requested pizza order' do
       pizza_order_to_delete = PizzaOrder.create!(valid_attributes)
-      
+
       expect {
         delete pizza_order_url(pizza_order_to_delete)
       }.to change(PizzaOrder, :count).by(-1)
@@ -239,10 +239,10 @@ RSpec.describe '/pizza_orders', type: :request do
         admin: true,
         created_at: 1.year.ago
       }
-      
+
       post pizza_orders_url, params: { pizza_order: malicious_params }
       expect(response).to have_http_status(:created)
-      
+
       created_order = PizzaOrder.last
       expect(created_order.customer_name).to eq('Test User')
       expect(created_order.pizza_type).to eq('margherita')
@@ -285,11 +285,11 @@ RSpec.describe '/pizza_orders', type: :request do
 
     it 'handles very long customer names' do
       long_name = 'A' * 1000
-      post pizza_orders_url, params: { 
-        pizza_order: valid_attributes.merge(customer_name: long_name) 
+      post pizza_orders_url, params: {
+        pizza_order: valid_attributes.merge(customer_name: long_name)
       }
       expect(response).to have_http_status(:created)
-      
+
       created_order = PizzaOrder.last
       expect(created_order.customer_name).to eq(long_name)
     end
