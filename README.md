@@ -21,7 +21,7 @@ Una API REST desarrollada con Ruby on Rails para gestionar pedidos de pizza con 
 
 ### 1. Clonar y preparar el proyecto
 ```bash
-cd /home/srespana/Desktop/sr_pizza
+cd {ruta}/sr_pizza
 bundle install
 ```
 
