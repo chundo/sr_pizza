@@ -88,11 +88,11 @@ RSpec.describe ProcessOrderJob, type: :job do
 
   describe 'error handling in real scenarios' do
     it 'handles nil order id' do
-      expect(Rails.logger).to receive(:error).with('Error procesando orden : undefined method `id\' for nil:NilClass')
+      expect(Rails.logger).to receive(:error).with('No se encontró la orden con ID: ')
 
       expect {
         described_class.new.perform(nil)
-      }.to raise_error(NoMethodError)
+      }.not_to raise_error
     end
 
     it 'handles string order id that exists' do
