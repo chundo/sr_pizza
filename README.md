@@ -5,6 +5,7 @@ Una API REST desarrollada con Ruby on Rails para gestionar pedidos de pizza con 
 ## 📋 Características
 
 - **API REST** para crear, listar y gestionar pedidos de pizza
+- **Sistema de ganadores** para seleccionar clientes ganadores de pedidos de pizza
 - **Procesamiento asíncrono** de pedidos con Sidekiq
 - **Validaciones robustas** con enums para tipos de pizza y tamaños
 - **Manejo de errores** completo y logging detallado
@@ -68,7 +69,7 @@ bundle exec sidekiq
 ### 1. Verificar que el servidor esté corriendo
 ```bash
 curl http://localhost:3000/pizza_orders
-# Respuesta esperada: []
+# Respuesta esperada: lista de pedidos existentes
 ```
 
 ### 2. Crear un nuevo pedido
@@ -97,6 +98,34 @@ curl http://localhost:3000/pizza_orders
 ### 4. Obtener un pedido específico
 ```bash
 curl http://localhost:3000/pizza_orders/1
+```
+
+### 5. ✨ **NUEVO**: Seleccionar un ganador
+```bash
+curl --location --request POST 'http://localhost:3000/winner_selection' \
+--header 'Content-Type: application/json'
+```
+
+**Respuesta esperada:**
+```json
+{
+  "status": "success",
+  "winner": {
+    "id": 3,
+    "customer_name": "María Fernández",
+    "pizza_type": "vegetarian",
+    "size": "small",
+    "order_date": "2025-06-18T23:40:28.601Z"
+  }
+}
+```
+
+**Respuesta cuando no hay pedidos:**
+```json
+{
+  "status": "failed",
+  "errors": ["No hay pedidos disponibles para seleccionar un ganador"]
+}
 ```
 
 ## 📊 Tipos de Pizza y Tamaños Disponibles
