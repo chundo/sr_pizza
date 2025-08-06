@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => "/sidekiq" if Rails.env.development?
   mount RailsAdmin::Engine => "/admin", as: "rails_admin" if Rails.env.development?
   resources :pizza_orders
+
+  # Winner selection endpoint
+  post "winner_selection", to: "winner_selection#select_winner"
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
