@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+# Demo script to test the pricing functionality
+require_relative '../app/services/pricing_service'
+
+puts "=== Sr Pizza - Pricing with VAT Demo ==="
+puts
+
+# Test different pizza combinations
+test_cases = [
+  { type: 'margherita', size: 'small' },
+  { type: 'margherita', size: 'medium' },
+  { type: 'margherita', size: 'large' },
+  { type: 'pepperoni', size: 'small' },
+  { type: 'pepperoni', size: 'medium' },
+  { type: 'pepperoni', size: 'large' },
+  { type: 'vegetarian', size: 'small' },
+  { type: 'vegetarian', size: 'medium' },
+  { type: 'vegetarian', size: 'large' }
+]
+
+puts "Standard pricing (19% VAT):"
+puts "Pizza Type".ljust(12) + "Size".ljust(8) + "Base Price".ljust(12) + "VAT".ljust(8) + "Total"
+puts "-" * 50
+
+test_cases.each do |pizza|
+  service = PricingService.new(pizza[:type], pizza[:size])
+  if service.base_price
+    printf "%-12s %-8s $%-11.2f $%-7.2f $%.2f\n", 
+           pizza[:type].capitalize, 
+           pizza[:size].capitalize,
+           service.base_price,
+           service.vat_amount,
+           service.total_price
+  end
+end
+
+puts
+puts "Custom VAT example (21% VAT):"
+service = PricingService.new('pepperoni', 'large', vat_rate: 0.21)
+printf "Pepperoni Large: Base=$%.2f, VAT=$%.2f (21%%), Total=$%.2f\n",
+       service.base_price, service.vat_amount, service.total_price
+
+puts
+puts "=== Functionality Summary ==="
+puts "✓ Calculates base price by pizza type and size"
+puts "✓ Applies configurable VAT rate (default 19%)"  
+puts "✓ Returns total price with VAT included"
+puts "✓ Supports custom VAT rates"
+puts "✓ Handles pricing calculations for pizza ordering service"

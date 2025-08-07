@@ -10,12 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_18_232240) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_07_224921) do
   create_table "pizza_orders", force: :cascade do |t|
     t.string "customer_name", null: false
     t.string "pizza_type", null: false
     t.string "size", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "base_price", precision: 8, scale: 2
+    t.decimal "vat_rate", precision: 5, scale: 4, default: "0.19"
+    t.decimal "vat_amount", precision: 8, scale: 2
+    t.decimal "total_price", precision: 8, scale: 2
   end
 end

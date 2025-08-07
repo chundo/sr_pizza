@@ -62,6 +62,16 @@ RSpec.describe PizzaOrderService, type: :service do
         expect(service.order).to be_persisted
       end
 
+      it 'calculates pricing automatically when processing valid order' do
+        service = described_class.new(valid_params)
+        service.process
+        
+        expect(service.order.base_price).to eq(16.00)  # margherita medium
+        expect(service.order.vat_rate).to eq(0.19)
+        expect(service.order.vat_amount).to eq(3.04)
+        expect(service.order.total_price).to eq(19.04)
+      end
+
       it 'enqueues ProcessOrderJob' do
         service = described_class.new(valid_params)
 
@@ -289,6 +299,38 @@ RSpec.describe PizzaOrderService, type: :service do
       # but it needs to access keys as strings, not symbols
       expect(result).to be(false), "Service may not handle string keys properly without modification"
       expect(service.errors).not_to be_empty
+    end
+  end
+
+  describe 'pricing functionality' do
+    it 'calculates pricing for different pizza combinations' do
+      test_cases = [
+        { params: { customer_name: 'Test', pizza_type: 'margherita', size: 'small' }, expected_total: 14.28 },
+        { params: { customer_name: 'Test', pizza_type: 'pepperoni', size: 'large' }, expected_total: 26.18 },
+        { params: { customer_name: 'Test', pizza_type: 'vegetarian', size: 'medium' }, expected_total: 20.23 }
+      ]
+      
+      test_cases.each do |test_case|
+        service = described_class.new(test_case[:params])
+        result = service.process
+        
+        expect(result).to be true
+        expect(service.order.total_price).to eq(test_case[:expected_total])
+      end
+    end
+
+    it 'handles pre-calculated pricing gracefully' do
+      params_with_pricing = valid_params.merge(
+        base_price: 25.00,
+        vat_rate: 0.21,
+        vat_amount: 5.25,
+        total_price: 30.25
+      )
+      service = described_class.new(params_with_pricing)
+      result = service.process
+      
+      expect(result).to be true
+      expect(service.order.total_price).to eq(30.25) # Should use provided values
     end
   end
 

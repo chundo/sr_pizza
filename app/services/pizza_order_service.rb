@@ -9,6 +9,11 @@ class PizzaOrderService
 
   def process
     @order = PizzaOrder.new(@params)
+    
+    # Calculate pricing if not already set
+    if @order.pizza_type.present? && @order.size.present? && @order.base_price.nil?
+      @order.calculate_pricing!
+    end
 
     if @order.save
       ProcessOrderJob.perform_later(@order.id)
