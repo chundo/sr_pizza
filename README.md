@@ -103,13 +103,61 @@ curl http://localhost:3000/pizza_orders/1
 
 ### Tipos de Pizza:
 - `margherita` - Pizza Margherita clásica
-- `pepperoni` - Pizza con pepperoni
+- `pepperoni` - Pizza con pepperoni  
 - `vegetarian` - Pizza vegetariana
 
 ### Tamaños:
 - `small` - Pequeña
 - `medium` - Mediana  
 - `large` - Grande
+
+## 💰 Sistema de Precios con IVA
+
+La aplicación incluye un sistema completo de cálculo de precios con IVA incluido:
+
+### Precios Base por Pizza y Tamaño:
+```
+Tipo         Pequeña  Mediana  Grande
+Margherita   $12.00   $16.00   $20.00
+Pepperoni    $14.00   $18.00   $22.00
+Vegetarian   $13.00   $17.00   $21.00
+```
+
+### Características del Sistema de Precios:
+- **IVA automático**: 19% por defecto (configurable)
+- **Cálculo preciso**: Precios con 2 decimales
+- **Integración automática**: Se calcula al crear pedidos
+- **Campos incluidos**: `base_price`, `vat_rate`, `vat_amount`, `total_price`
+
+### Probar el Sistema de Precios:
+```bash
+# Ejecutar demo de precios
+./bin/demo_pricing
+
+# Crear pedido con precios calculados automáticamente
+curl -X POST http://localhost:3000/pizza_orders \
+-H "Content-Type: application/json" \
+-d '{
+  "customer_name": "María González",
+  "pizza_type": "pepperoni",
+  "size": "large"
+}'
+```
+
+**Respuesta con precios:**
+```json
+{
+  "id": 1,
+  "customer_name": "María González",
+  "pizza_type": "pepperoni",
+  "size": "large",
+  "base_price": "22.00",
+  "vat_rate": "0.19",
+  "vat_amount": "4.18",
+  "total_price": "26.18",
+  "created_at": "2025-08-07T22:49:21.000Z"
+}
+```
 
 ## 🔧 Comandos Útiles para Desarrollo
 

@@ -36,6 +36,12 @@ class PizzaOrderService
     sanitized = params.dup
     sanitized[:pizza_type] = params[:pizza_type]&.to_s&.downcase
     sanitized[:size] = params[:size]&.to_s&.downcase
+    
+    # Preserve pricing params if provided
+    if params[:vat_rate] && params[:vat_rate].is_a?(Numeric)
+      sanitized[:vat_rate] = params[:vat_rate]
+    end
+    
     sanitized
   end
 end
